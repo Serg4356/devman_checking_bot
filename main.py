@@ -4,20 +4,15 @@ import os
 import telegram
 
 
-
-def make_bot_messages(attempts):
-    bot_messages = []
-    for attempt in attempts:
-        bot_message = ''
-        lesson_title = attempt['lesson_title']
-        bot_message += f'У вас проверили работу {lesson_title}\n\n'
-        if attempt['is_negative']:
-            bot_message += 'К сожалению, в работе нашлись ошибки'
-        else:
-            bot_message += 'Преподавателю все понравилось, можно'
-            ' приступать к следующему уроку'
-        bot_messages.append(bot_message)
-    return bot_messages
+def make_bot_message(attempt):
+    bot_message = 'У вас проверили работу {}\n\n'.format(
+        attempt['lesson_title'])
+    if attempt['is_negative']:
+        bot_message += 'К сожалению, в работе нашлись ошибки'
+    else:
+        bot_message += 'Преподавателю все понравилось, можно'
+        ' приступать к следующему уроку'
+    return bot_message
 
 
 if __name__ == '__main__':
@@ -39,13 +34,16 @@ if __name__ == '__main__':
                                     params=params,
                                     headers=headers,
                                     timeout=91)
-            if 'new_attempts' in response.json().keys():
-                bot_messages = make_bot_messages(response.json()['new_attempts'])
+            dvmn_check_info = response.json()
+            if 'new_attempts' in dvmn_check_info.keys():
+                bot_messages = []
+                for attempt in dvmn_check_info['new_attempts']:
+                    bot_messages.append(make_bot_message(attempt))
                 for bot_message in bot_messages:
                     bot.send_message(chat_id=chat_id, text=bot_message)
-                params['timestamp'] = response.json()['last_attempt_timestamp']
+                params['timestamp'] = dvmn_check_info['last_attempt_timestamp']
                 continue
-            params['timestamp'] = response.json()['timestamp_to_request']
+            params['timestamp'] = dvmn_check_info['timestamp_to_request']
         except requests.exceptions.ReadTimeout:
             pass
         except requests.exceptions.ConnectionError:
