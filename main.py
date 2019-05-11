@@ -19,10 +19,11 @@ if __name__ == '__main__':
     load_dotenv()
     dvmn_token = os.getenv('dvmn_token')
     telegram_token = os.getenv('telegram_token')
-    http_proxy = os.getenv('HTTP_PROXY')
+    #http_proxy = os.getenv('HTTP_PROXY')
     chat_id = os.getenv('chat_id')
-    bot_proxy = telegram.utils.request.Request(proxy_url=http_proxy)
-    bot = telegram.Bot(token=telegram_token, request=bot_proxy)
+    #bot_proxy = telegram.utils.request.Request(proxy_url=http_proxy)
+    #bot = telegram.Bot(token=telegram_token, request=bot_proxy)
+    bot = telegram.Bot(token=telegram_token)
     url = 'https://dvmn.org/api/long_polling/'
     headers = {
         'Authorization': f'Token {dvmn_token}',
