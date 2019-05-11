@@ -17,6 +17,16 @@ def make_bot_message(attempt):
     return bot_message
 
 
+class MyLogsHandler(logging.Handler):
+
+    def __init__(self, telegram_bot, chat_id):
+        self.telegram_bot = telegram_bot
+        self.chat_id = chat_id
+
+    def emit(self, record):
+        log_entry = self.format(record)
+        telegram_bot.send_message(chat_id=chat_id, text=log_entry)
+
 if __name__ == '__main__':
     load_dotenv()
     dvmn_token = os.getenv('dvmn_token')
@@ -31,21 +41,21 @@ if __name__ == '__main__':
         'Authorization': f'Token {dvmn_token}',
     }
     params = {}
-    logging.basicConfig(
-        format='%(asctime)s %(process)d %(levelname)s %(message)s',
-        level=logging.DEBUG)
-    logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
-    logging.info('Bot has been started')
+    logger = telebot.logger
+    logger.basicConfig(level=logging.DEBUG,
+                       format=' %(asctime)s - %(levelname)s - %(message)s',
+                       handler=MyLogsHandler())
+    logger.info('Bot has been started')
     while True:
         try:
             response = requests.get(url,
                                     params=params,
                                     headers=headers,
                                     timeout=91)
-            logging.info('Sent request to Devman')
+            logger.info('Sent request to Devman')
             dvmn_check_info = response.json()
             if 'new_attempts' in dvmn_check_info.keys():
-                logging.info('New attempts found')
+                logger.info('New attempts found')
                 bot_messages = []
                 for attempt in dvmn_check_info['new_attempts']:
                     bot_messages.append(make_bot_message(attempt))
@@ -53,9 +63,9 @@ if __name__ == '__main__':
                     bot.send_message(chat_id=chat_id, text=bot_message)
                 params['timestamp'] = dvmn_check_info['last_attempt_timestamp']
                 continue
-            logging.info('No new attempts found')
+            logger.info('No new attempts found')
             params['timestamp'] = dvmn_check_info['timestamp_to_request']
         except requests.exceptions.ReadTimeout as read_timeout_err:
-            logging.error(read_timeout_err, exc_info=True)
+            logger.error(read_timeout_err, exc_info=True)
         except requests.exceptions.ConnectionError as conn_err:
-            logging.error(conn_err, exc_info=True)
+            logger.error(conn_err, exc_info=True)
