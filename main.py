@@ -32,7 +32,8 @@ if __name__ == '__main__':
     }
     params = {}
     logging.basicConfig(
-        format='%(asctime)s %(process)d %(levelname)s %(message)s')
+        format='%(asctime)s %(process)d %(levelname)s %(message)s',
+        level=logging.DEBUG)
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
     logging.info('Bot has been started')
     while True:
