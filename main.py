@@ -41,10 +41,10 @@ if __name__ == '__main__':
         'Authorization': f'Token {dvmn_token}',
     }
     params = {}
-    logger = telebot.logger
+    logger = logging.getLogger()
     logger.basicConfig(level=logging.DEBUG,
                        format=' %(asctime)s - %(levelname)s - %(message)s',
-                       handler=MyLogsHandler())
+                       handler=MyLogsHandler(bot, chat_id))
     logger.info('Bot has been started')
     while True:
         try:
