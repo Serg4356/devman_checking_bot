@@ -43,8 +43,8 @@ if __name__ == '__main__':
     params = {}
     logger = logging.getLogger()
     logging.basicConfig(level=logging.DEBUG,
-                        format=' %(asctime)s - %(levelname)s - %(message)s',
-                        handler=MyLogsHandler(bot, chat_id))
+                        format=' %(asctime)s - %(levelname)s - %(message)s')
+    logger.addHandler(MyLogsHandler(bot, chat_id))
     logger.info('Bot has been started')
     while True:
         try:
