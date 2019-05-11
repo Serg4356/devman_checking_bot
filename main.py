@@ -30,7 +30,9 @@ if __name__ == '__main__':
         'Authorization': f'Token {dvmn_token}',
     }
     params = {}
-    logging.basicConfig(format=('%(asctime)s %(process)d %(levelname)s %(message)s'))
+    logging.basicConfig(
+        format='%(asctime)s %(process)d %(levelname)s %(message)s')
+    logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
     logging.info('Bot has been started')
     while True:
         try:
