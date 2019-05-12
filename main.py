@@ -24,22 +24,18 @@ class MyLogsHandler(logging.Handler):
         super().__init__()
         load_dotenv()
         telegram_token = os.getenv('telegram_token')
-        proxy = os.getenv('HTTP_PROXY')
-        bot_proxy = telegram.utils.request.Request(proxy_url=http_proxy)
-        self.telegram_bot = telegram.Bot(token=telegram_token, request=bot_proxy)
+        self.telegram_bot = telegram.Bot(token=telegram_token)
 
     def emit(self, record):
         log_entry = self.format(record)
-        self.telegram_bot.send_message(chat_id=chat_id, text=str(log_entry))
+        self.telegram_bot.send_message(chat_id=chat_id, text=log_entry)
 
 
 if __name__ == '__main__':
     load_dotenv()
     dvmn_token = os.getenv('dvmn_token')
     telegram_token = os.getenv('telegram_token')
-    http_proxy = os.getenv('HTTP_PROXY')
     chat_id = os.getenv('chat_id')
-    bot_proxy = telegram.utils.request.Request(proxy_url=http_proxy)
     url = 'https://dvmn.org/api/long_polling/'
     headers = {
         'Authorization': f'Token {dvmn_token}',
@@ -53,7 +49,7 @@ if __name__ == '__main__':
     logger.addHandler(handler)
     while True:
         try:
-            bot = telegram.Bot(token=telegram_token, request=bot_proxy)
+            bot = telegram.Bot(token=telegram_token)
             logger.info('Bot has been started')
             while True:
                 try:
