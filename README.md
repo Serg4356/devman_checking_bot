@@ -1,6 +1,6 @@
 # Devman task-control checking Telegram bot
 
-This simple telegram bot sends message every time when your task is checked on [dvmn.org](https://dvmn.org). It has two types of messages, depending on is there any mistakes found by your course tutor.
+This simple telegram bot sends message every time when your task is checked on [dvmn.org](https://dvmn.org). It has two types of messages, depending on is there any mistakes found by your course tutor. Besides that, it sends some service information (like bot execution status, and errors if they occure).   
 
 ### How to install
 
@@ -14,13 +14,11 @@ Besides that you must create `.env` file in your project's folder, containing en
 ```
 dvmn_token=b234bc234cd23423a123242
 telegram_token=95132391:wP3db3301vnrob33BZdb33KwP3db3F1I
-HTTP_PROXY=http://123.12.12.123:1223
 chat_id=654578
 ```
 Variables description:  
 `dvmn_token` - your personal token from [dvmn.org](https://dvmn.org), used for api requests authorization. Usually could be found [here](https://dvmn.org/api/docs/).  
 `telegram_token` - your telegram bot token, you would get it from [BotFather](https://telegram.me/BotFather) after you bot's been registered.  
-`HTTP_PROXY` - if telegram is blocked in your country you should use proxy to access it. Find one in the internet for free or pay for it. You must specify schema, ip-adress and port like in the example above.  
 `chat_id` - Your chat id. You can find out it from @userinfobot in Telegram.
 
 Warning! All of environment variables are required. 
@@ -31,6 +29,19 @@ After installation type into console:
 ```
 $python main.py
 ```
+
+### Deploing on Heroku
+
+This bot can be deployed on Heroku platform. There is a Procfile in project's repository with all required instructions in it.   
+   
+Just do the following to make successfull deploy:  
+   
+1. Register on [Heroku](https://heroku.com)  
+2. Add new app and name it.  
+3. Fork this repository to your github account, and deploy it on Heroku. (You can also choose automatic github deploy, to refresh your project from latests commits).  
+4. Turn on new proccess on your heroku account resourses page.   
+5. Have fun)  
+
 
 ### Project Goals
 
