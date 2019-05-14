@@ -39,13 +39,9 @@ if __name__ == '__main__':
         'Authorization': f'Token {dvmn_token}',
     }
     params = {}
-    bot_loger = telegram.Bot(token=telegram_token)
     logger = logging.getLogger()
-    handler = MyLogsHandler(bot_loger)
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    handler.setFormatter(formatter)
     logger.setLevel(logging.INFO)
-    logger.addHandler(handler)
     while True:
         try:
             bot_loger = telegram.Bot(token=telegram_token)
@@ -63,7 +59,7 @@ if __name__ == '__main__':
                     logger.debug('Sent request to Devman')
                     response.raise_for_status()
                     dvmn_check_info = response.json()
-                    if error in dvmn_check_info:
+                    if 'error' in dvmn_check_info.keys():
                         raise requests.exceptions.HTTPError(dvmn_check_info['error'])
                     if 'new_attempts' in dvmn_check_info.keys():
                         logger.debug('New attempts found')
