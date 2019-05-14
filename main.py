@@ -61,7 +61,10 @@ if __name__ == '__main__':
                                             headers=headers,
                                             timeout=91)
                     logger.debug('Sent request to Devman')
+                    response.raise_for_status()
                     dvmn_check_info = response.json()
+                    if error in dvmn_check_info:
+                        raise requests.exceptions.HTTPError(dvmn_check_info['error'])
                     if 'new_attempts' in dvmn_check_info.keys():
                         logger.debug('New attempts found')
                         bot_messages = []
@@ -78,5 +81,7 @@ if __name__ == '__main__':
                     logger.error(read_timeout_err)
                 except requests.exceptions.ConnectionError as conn_err:
                     logger.error(conn_err)
+                except requests.exceptions.HTTPError as http_err:
+                    logger.error(http_err)
         except Exception as err:
             logger.error(err)
