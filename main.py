@@ -20,11 +20,9 @@ def make_bot_message(attempt):
 
 class MyLogsHandler(logging.Handler):
 
-    def __init__(self):
+    def __init__(self, telegram_bot):
         super().__init__()
-        load_dotenv()
-        telegram_token = os.getenv('telegram_token')
-        self.telegram_bot = telegram.Bot(token=telegram_token)
+        self.telegram_bot = telegram_bot
 
     def emit(self, record):
         log_entry = self.format(record)
@@ -41,15 +39,20 @@ if __name__ == '__main__':
         'Authorization': f'Token {dvmn_token}',
     }
     params = {}
+    bot_loger = telegram.Bot(token=telegram_token)
     logger = logging.getLogger()
-    handler = MyLogsHandler()
+    handler = MyLogsHandler(bot_loger)
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
     logger.setLevel(logging.INFO)
     logger.addHandler(handler)
     while True:
         try:
-            bot = telegram.Bot(token=telegram_token)
+            bot_loger = telegram.Bot(token=telegram_token)
+            handler = MyLogsHandler(bot_loger)
+            handler.setFormatter(formatter)
+            logger.addHandler(handler)
+            bot_checker = telegram.Bot(token=telegram_token)
             logger.info('Bot has been started')
             while True:
                 try:
@@ -65,7 +68,8 @@ if __name__ == '__main__':
                         for attempt in dvmn_check_info['new_attempts']:
                             bot_messages.append(make_bot_message(attempt))
                         for bot_message in bot_messages:
-                            bot.send_message(chat_id=chat_id, text=bot_message)
+                            bot_checker.send_message(chat_id=chat_id,
+                                                     text=bot_message)
                         params['timestamp'] = dvmn_check_info['last_attempt_timestamp']
                         continue
                     logger.debug('No new attempts found')
