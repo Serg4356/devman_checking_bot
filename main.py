@@ -20,13 +20,14 @@ def make_bot_message(attempt):
 
 class MyLogsHandler(logging.Handler):
 
-    def __init__(self, telegram_bot):
+    def __init__(self, telegram_bot, chat_id):
         super().__init__()
+        self.chat_id = chat_id
         self.telegram_bot = telegram_bot
 
     def emit(self, record):
         log_entry = self.format(record)
-        self.telegram_bot.send_message(chat_id=chat_id, text=log_entry)
+        self.telegram_bot.send_message(chat_id=self.chat_id, text=log_entry)
 
 
 if __name__ == '__main__':
@@ -45,7 +46,7 @@ if __name__ == '__main__':
     while True:
         try:
             bot_loger = telegram.Bot(token=telegram_token)
-            handler = MyLogsHandler(bot_loger)
+            handler = MyLogsHandler(bot_loger, chat_id)
             handler.setFormatter(formatter)
             logger.addHandler(handler)
             bot_checker = telegram.Bot(token=telegram_token)
